@@ -1,9 +1,11 @@
 import { Connection, Keypair } from '@solana/web3.js';
 import configJson from '../configSolana.json';
 import { readFileSync } from 'fs';
+import bs58 from 'bs58';
 
-const keyJson = JSON.parse(readFileSync('privatekey.json', 'utf8'));
-export const payer = Keypair.fromSecretKey(Uint8Array.from(keyJson));
+const key = readFileSync('privatekey.txt', 'utf8');
+const uint8ArrayPrivateKey = bs58.decode(key);
+export const payer = Keypair.fromSecretKey(uint8ArrayPrivateKey);
 
 export const config = {
     oftProgramId: configJson.oftProgramId,
@@ -14,6 +16,12 @@ export const config = {
 }
 
 export const connection = new Connection(config.rpcUrl, "confirmed");
+
+// get payer balance
+export async function getPayerBalance() {
+    const balance = await connection.getBalance(payer.publicKey);
+    console.log('Payer balance:', balance);
+}
 
 export function hexStringToUint8Array(hexString: string): Uint8Array {
     // Remove the optional "0x" prefix
