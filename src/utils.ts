@@ -1,11 +1,10 @@
 import { Connection, Keypair } from '@solana/web3.js';
 import configJson from '../configSolana.json';
 import { readFileSync } from 'fs';
-import bs58 from 'bs58';
+import { base58 } from "ethers/lib/utils"
 
 const key = readFileSync('privatekey.txt', 'utf8');
-const uint8ArrayPrivateKey = bs58.decode(key);
-export const payer = Keypair.fromSecretKey(uint8ArrayPrivateKey);
+export const payer = Keypair.fromSecretKey(base58.decode(key));
 
 export const config = {
     oftProgramId: configJson.oftProgramId,
